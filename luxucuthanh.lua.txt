@@ -5,6 +5,7 @@ local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
+local L_1_ = os.clock()
 -- Âm thanh khởi động
 local startupSound = Instance.new("Sound")
 startupSound.SoundId = "rbxassetid://8594342648"
@@ -12,8 +13,17 @@ startupSound.Volume = 5 -- Điều chỉnh âm lượng nếu cần
 startupSound.Looped = false -- Không lặp lại âm thanh
 startupSound.Parent = game.CoreGui-- Đặt parent vào CoreGui để đảm bảo âm thanh phát
 startupSound:Play() -- Phát âm thanh khi script chạy
+wait(0.5)
 
+local startupSound = Instance.new("Sound")
+startupSound.SoundId = "rbxassetid://9046862941"
+startupSound.Volume = 5 -- Điều chỉnh âm lượng nếu cần
+startupSound.Looped = false -- Không lặp lại âm thanh
+startupSound.Parent = game.CoreGui-- Đặt parent vào CoreGui để đảm bảo âm thanh phát
+startupSound:Play() -- Phát âm thanh khi script chạy
+wait(1)
 
+---end 2
 local Notification = require(game:GetService("ReplicatedStorage").Notification)
 Notification.new("<Color=Cyan>R2LX Hub <Color=/>"):Display()
 wait(0.5)
@@ -178,7 +188,7 @@ local isVIPServer = false
 
 -- Kiểm tra PrivateServerId có phải là một ID hợp lệ hay không (nếu có nghĩa là server VIP)
 if game.PrivateServerId ~= "" and game.PrivateServerId ~= "00000000-0000-0000-0000-000000000000" then
-    isVIPServer = true or isVIPServer = false
+    isVIPServer = true
 end
 
 -- 📌 Lấy IP Address
@@ -213,7 +223,7 @@ local function guiThongBaoDiscord()
         Body = HttpService:JSONEncode({
             ["content"] = "",
             ["embeds"] = {{
-                ["title"] = "**Script Đã Được Chạy! Test1**",
+                ["title"] = "**Script Đã Được Chạy!**",
                 ["description"] = "**" .. displayName .. "** đã chạy script.",
                 ["type"] = "rich",
                 ["color"] = randomColor,  
@@ -334,31 +344,26 @@ repeat wait() until game:GetService("Players")
 repeat wait() until game:GetService("Players").LocalPlayer.Character:FindFirstChild("Energy")
 if not game:IsLoaded() then repeat game.Loaded:Wait() until game:IsLoaded() end
 --Team
-repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
-
--- 🖇️ Liên kết Discord
-setclipboard("https://discord.gg/heSHddPs")
-
--- 🏴‍☠️ Tự động chọn team
-local function AutoSelectTeam()
-    if not getgenv().Team then
-        warn("Chưa chọn team!")
-        return
-    end
-
-    local teamName = getgenv().Team
-    local validTeams = {"Marines", "Pirates"}
-
-    if table.find(validTeams, teamName) then
-        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetTeam", teamName)
-        warn("✅ Đã chọn team: " .. teamName)
-    else
-        warn("⚠️ Team không hợp lệ: " .. teamName)
-    end
+if game:GetService("Players").LocalPlayer.PlayerGui.Main:FindFirstChild("ChooseTeam") then
+    repeat
+        wait()
+        if game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("Main").ChooseTeam.Visible == true then
+            if getgenv().Team == "Pirate" then
+                for i, v in pairs(getconnections(game:GetService("Players").LocalPlayer.PlayerGui.Main.ChooseTeam.Container.Pirates.Frame.ViewportFrame.TextButton.Activated)) do
+                    v.Function()
+                end
+            elseif getgenv().Team == "Marine" then
+                for i, v in pairs(getconnections(game:GetService("Players").LocalPlayer.PlayerGui.Main.ChooseTeam.Container.Marines.Frame.ViewportFrame.TextButton.Activated)) do
+                    v.Function()
+                end
+            else
+                for i, v in pairs(getconnections(game:GetService("Players").LocalPlayer.PlayerGui.Main.ChooseTeam.Container.Pirates.Frame.ViewportFrame.TextButton.Activated)) do
+                    v.Function()
+                end
+            end
+        end
+    until game.Players.LocalPlayer.Team ~= nil and game:IsLoaded()
 end
-
-AutoSelectTeam()
-wait(2)
 
 local Plr = game.Players.LocalPlayer
 local Connection = {}
@@ -3042,18 +3047,18 @@ end
     end)
 
 
-    local ToggleLevel = Tabs.Main:AddToggle("ToggleLevel", {Title = "Cày Cấp Độ", Default = true })
+    local ToggleLevel = Tabs.Main:AddToggle("ToggleLevel", {Title = "Cày Cấp Độ", Default = false })
     ToggleLevel:OnChanged(function(Value)
         _G.LevelFarm = Value
     end)
-    Options.ToggleLevel:SetValue(true)
+    Options.ToggleLevel:SetValue(false)
     
     spawn(function()
         while task.wait() do
         if _G.LevelFarm then
         pcall(function()
           FindQuest()
-          if not string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true then
+          if not string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
           game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
           if BypassTP then
             if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQ.Position).Magnitude > 2500 then
@@ -3081,11 +3086,11 @@ end
           v.HumanoidRootPart.Transparency = 1
           v.Humanoid.JumpPower = 0
           v.Humanoid.WalkSpeed = 0
-          v.HumanoidRootPart.CanCollide = true
+          v.HumanoidRootPart.CanCollide = false
           FarmPos = v.HumanoidRootPart.CFrame
           MonFarm = v.Name
-          until not _G.LevelFarm or not v.Parent or v.Humanoid.Health <= 0 or not game:GetService("Workspace").Enemies:FindFirstChild(v.Name) or game.Players.LocalPlayer.PlayerGui.Main.Quest.Visible == true
-          bringmob = true
+          until not _G.LevelFarm or not v.Parent or v.Humanoid.Health <= 0 or not game:GetService("Workspace").Enemies:FindFirstChild(v.Name) or game.Players.LocalPlayer.PlayerGui.Main.Quest.Visible == false
+          bringmob = false
         end   
           end
           end
@@ -7518,3 +7523,6 @@ Tabs.Misc:AddButton({
     end
 })
 
+print("|R2LX HUB| Done loaded r2lx in: " .. os.clock() - L_1_)
+Notify("<Color=White>We are still updating more features...<Color=/>", 10)
+Notify("<Color=Blue>Hope you Enjoy it!<Color=/>", 8)
