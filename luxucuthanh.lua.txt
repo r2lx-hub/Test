@@ -30,6 +30,25 @@ wait(0.5)
 Notification.new("<Color=Yellow>By R2LX Hub On Top👑<Color=/>"):Display()
 wait(1)
 
+-- Thông báo chữ 2 màu mãi
+function CreateNotification(text1, color1, text2, color2)
+    local ScreenGui = Instance.new("ScreenGui", game.Players.LocalPlayer.PlayerGui)
+    local TextLabel = Instance.new("TextLabel", ScreenGui)
+
+    TextLabel.Size = UDim2.new(0, 400, 0, 50)
+    TextLabel.Position = UDim2.new(0.5, -200, 0.1, 0)
+    TextLabel.BackgroundTransparency = 1
+    TextLabel.Font = Enum.Font.SourceSansBold
+    TextLabel.TextSize = 30
+    TextLabel.TextStrokeTransparency = 0
+    TextLabel.RichText = true
+    TextLabel.Text = string.format('<font color="rgb(%d,%d,%d)">%s</font> <font color="rgb(%d,%d,%d)">%s</font>', 
+        color1.R * 255, color1.G * 255, color1.B * 255, text1, 
+        color2.R * 255, color2.G * 255, color2.B * 255, text2
+    )
+end
+
+-- hết
 -- Thông Báo Executor
 
 -- 🛠 Xác định Executor
@@ -4864,6 +4883,7 @@ Camera:Stop()
     end)
     Options.ToggleBypassTP:SetValue(false)
 
+local Mastery = Tabs.Setting:AddSection("Fix Lag")
 
 local ToggleRemove = Tabs.Setting:AddToggle("ToggleRemove", {Title = " Enable Remove Dame Text", Default = true })
 ToggleRemove:OnChanged(function(Value)
@@ -5079,6 +5099,30 @@ function DisableTransparency()
 end
 
 -- End
+
+local ToggleMuteSound = Tabs.Setting:AddToggle("ToggleMuteSound", {Title = "Tắt Âm Thanh", Default = false })
+ToggleMuteSound:OnChanged(function(Value)  
+	_G.MuteSound = Value
+end)
+Options.ToggleMuteSound:SetValue(false)
+
+spawn(function()
+	while wait(0.1) do
+		if _G.MuteSound then
+			for _, v in pairs(game:GetDescendants()) do
+				if v:IsA("Sound") then
+					v.Volume = 0 -- Tắt âm thanh
+				end
+			end
+		else
+			for _, v in pairs(game:GetDescendants()) do
+				if v:IsA("Sound") then
+					v.Volume = 1 -- Bật lại âm thanh
+				end
+			end
+		end
+	end
+end)
     
 local SKill = Tabs.Setting:AddSection("Cài Đặt Mastery")
 local ToggleZ = Tabs.Setting:AddToggle("ToggleZ", {Title = "Skill Z", Default = true })
@@ -7514,12 +7558,16 @@ Tabs.Misc:AddButton({
 })
 
 Tabs.Misc:AddButton({
-	Title = "Trời Sáng",
-	Description = "",
-	Callback = function()
-        game:GetService("RunService").Heartbeat:wait() do
+    Title = "Trời Sáng",
+    Description = "",
+    Callback = function()
         game:GetService("Lighting").ClockTime = 12
-        end
+        game:GetService("Lighting").FogEnd = 1e10
+        game:GetService("Lighting").FogStart = 1e10
+        game:GetService("Lighting").FogColor = Color3.new(1, 1, 1)
+        game:GetService("Lighting").Ambient = Color3.new(1, 1, 1)
+        game:GetService("Lighting").ColorShift_Bottom = Color3.new(1, 1, 1)
+        game:GetService("Lighting").ColorShift_Top = Color3.new(1, 1, 1)
     end
 })
 
